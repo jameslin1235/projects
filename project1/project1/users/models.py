@@ -16,9 +16,9 @@ class User(AbstractUser):
         (MALE, 'Male'),
         (FEMALE, 'Female')
     )
-    tags = models.ManyToManyField(Tag)
-    posts = models.ManyToManyField(Post)
-    users = models.ManyToManyField("self", symmetrical=False)
+    tags = models.ManyToManyField(Tag, through='UserTag', related_name='followers')
+    posts = models.ManyToManyField(Post, through='UserPost', related_name='likers')
+    users = models.ManyToManyField('self', symmetrical=False, through='UserUser')
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     gender = models.CharField(
@@ -73,8 +73,23 @@ class User(AbstractUser):
     def get_absolute_url(self):
         return reverse('users:user_detail', kwargs={'pk': self.pk})
 
+class UserPost(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    created = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return '%s %s' % (self.user, self.post)
 
-# print(type(User._meta.get_field('posts')))
-# print(User._meta.get_field('posts').related_name)
-# print(User._meta.get_field('posts').description)
+class UserTag(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return '%s %s' % (self.user, self.tag)
+
+class UserUser(models.Model):
+    following = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='following')
+    followed = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='followed')
+    created = models.DateTimeField(auto_now_add=True)
