@@ -15,14 +15,12 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
+from project1.project1.users import views
 
-# urlpatterns = [
-#     url(r'^admin/', admin.site.urls),
-# ]
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    # url(r'^$', users.home, name="home"),
+    url(r'^$', views.home, name='home'),
     # url(r'^drafts/$', profiles.profile_drafts, name='profile_drafts'),
     url(r'^posts/', include("project1.project1.posts.urls", namespace="posts")),
     url(r'^tags/', include("project1.project1.tags.urls", namespace="tags")),
