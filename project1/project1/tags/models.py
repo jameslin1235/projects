@@ -14,7 +14,7 @@ class Tag(models.Model):
         return '%s' % (self.name)
 
     def get_absolute_url(self):
-        return reverse('tags:tag_detail', kwargs={'pk': self.pk})
+        return reverse('tags:tag_detail', kwargs={'id': self.id})
 
 class TagPost(models.Model):
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE)

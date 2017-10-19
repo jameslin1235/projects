@@ -1,7 +1,12 @@
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, get_object_or_404, redirect
 from project1.project1.tags.models import Tag, TagPost
+from project1.project1.posts.models import Post
+from project1.project1.users.models import User, UserUser, UserPost
 from django.http import HttpResponse
+from django.template.loader import get_template
+from django.template import Context, Template
+from django.template.engine import Engine
 # Create your views here.
 # def user_list(request):
 #     if request.method == "POST":
@@ -79,12 +84,12 @@ def home(request):
         if request.user.is_authenticated:
             print('w')
         else:
-            general_tags = Tag.objects.filter(id__lte=10)
-            print(render(request, 'home.html'))
-            # return render(request, 'home.html')
-            # hrp = HttpResponse('Bingo')
-            # print(hrp.content)
-            # return hrp
+            general_tags = Tag.objects.filter(id__lt=11)
+            for t in general_tags:
+                bool(t.posts.all())
+            # bool(general_tags)
+            context = {'general_tags':general_tags}
+            return render(request, 'home.html', context)
 
 
     # if request.method == "GET":
